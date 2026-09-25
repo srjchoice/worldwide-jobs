@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Worldwide Jobs</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#f3f5f8;--ink:#102033;--muted:#5c6d80;--line:#e3e8ee;--navy:#102c4c;--gold:#c9a227;--gold-ink:#1a1404}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{width:min(1080px,calc(100% - 32px));margin:auto}
+.top{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff}
+.top-in{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;gap:8px;align-items:center;color:#fff;text-decoration:none;font-weight:800}
+.mark{width:30px;height:30px;border-radius:8px;background:var(--gold);color:var(--gold-ink);display:grid;place-items:center;font-size:11px}
+nav a{color:#e8eef5;text-decoration:none;margin-left:12px;font-size:13px;font-weight:700}
+.view{display:none;padding-bottom:40px}
+.view.on{display:block}
+.hero{background:var(--navy);color:#fff;padding:40px 0}
+.hero h1{font-size:28px;max-width:14ch}
+.hero p{margin:10px 0 18px;color:#d5deea}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn-gold{background:var(--gold);color:var(--gold-ink)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.btn-block{width:100%}
+.sec{padding:24px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+@media(min-width:800px){.grid{grid-template-columns:repeat(5,1fr)}}
+.ccard,.jcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;font:inherit;cursor:pointer}
+.ccard .f{font-size:28px;line-height:1}
+.ccard b{display:block;margin-top:6px;font-size:13px}
+.center{display:flex;justify-content:center;margin:16px 0}
+.filters{display:grid;gap:8px;margin:12px 0}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:12px;font:inherit}
+.jcard{text-align:left;margin-bottom:10px}
+.tag{display:inline-block;background:#eef3f8;border-radius:999px;padding:3px 8px;font-size:11px;margin:2px 4px 2px 0}
+.block{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.back{background:none;border:0;font:inherit;color:var(--muted);margin:14px 0;cursor:pointer}
+form{display:grid;gap:12px}
+label{display:grid;gap:5px;font-size:13px;font-weight:800}
+.req::after{content:" *";color:#b42318}
+.err{color:#b42318}
+.muted{color:var(--muted);font-size:14px}
+.okbox{text-align:center;padding-top:28px}
+.num{font-size:22px;margin:10px 0}
+.hidden{display:none!important}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff}
+th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left}
+th{background:var(--navy);color:#fff}
+footer{padding:18px 0 28px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+<a class="brand" href="#home"><span class="mark" id="secretMark">WJ</span>Worldwide Jobs</a>
+<nav><a href="#home">Home</a><a href="#jobs">Jobs</a><a href="#countries">Countries</a></nav>
+</div></header>
+
+<section id="home" class="view on">
+<div class="hero"><div class="wrap">
+<h1>Find Job Opportunities Worldwide</h1>
+<p>Explore job opportunities by country and apply online.</p>
+<div class="row">
+<a class="btn btn-gold" href="#countries">Explore Countries</a>
+<a class="btn btn-gold" href="#jobs">View Jobs</a>
+</div></div></div>
+<div class="wrap sec" id="countries">
+<h2>Countries</h2>
+<div class="grid" id="countryGrid"></div>
+<div class="center"><button class="btn btn-line" type="button" id="viewAll">View All Countries</button></div>
+</div>
+</section>
+
+<section id="jobs" class="view"><div class="wrap sec">
+<h2>Jobs</h2>
+<div class="filters">
+<input id="q" placeholder="Search jobs"/>
+<select id="fCountry"><option value="">All countries</option></select>
+<select id="fCat"><option value="">All categories</option></select>
+</div>
+<div id="jobList"></div>
+</div></section>
+
+<section id="job" class="view"><div class="wrap">
+<button class="back" type="button" id="backJobs">Back</button>
+<div id="jobHead"></div><div id="jobBody"></div>
+<button class="btn btn-gold btn-block" type="button" id="applyNow">Apply Now</button>
+</div></section>
+
+<section id="apply" class="view"><div class="wrap">
+<button class="back" type="button" id="backJob">Back</button>
+<h2>Application</h2>
+<div class="block" id="applyJobBox"></div>
+<form id="applyForm">
+<label class="req">Full Name<input name="fullName" required></label>
+<label class="req">Mobile Number<input name="mobile" required></label>
+<label class="req">Email<input name="email" type="email" required></label>
+<label class="req">Nationality<input name="nationality" required></label>
+<label class="req">Work Experience<textarea name="workExperience" rows="3" required></textarea></label>
+<label class="req">CV / Resume<input type="file" name="cv" accept=".pdf,.jpg,.jpeg,.png" required></label>
+<label>Passport Copy<input type="file" name="passport" accept=".pdf,.jpg,.jpeg,.png"></label>
+<label>Additional Information<textarea name="notes" rows="3"></textarea></label>
+<p class="err" id="formErr"></p>
+<button class="btn btn-gold btn-block" type="submit">Submit Application</button>
+</form>
+</div></section>
+
+<section id="done" class="view"><div class="wrap okbox">
+<h2>Application Submitted</h2>
+<div class="num" id="doneNo"></div>
+<div class="block" id="doneBox"></div>
+<button class="btn btn-gold" type="button" id="dlPdf">Download PDF</button>
+</div></section>
+
+<section id="adminLogin" class="view"><div class="wrap sec" style="max-width:420px">
+<h2>Admin</h2>
+<form id="adminLoginForm">
+<label>Username<input name="username" required></label>
+<label>Password<input name="password" type="password" required></label>
+<p class="err" id="adminErr"></p>
+<button class="btn btn-gold btn-block" type="submit">Sign in</button>
+</form>
+</div></section>
+
+<section id="admin" class="view"><div class="wrap sec">
+<div class="row" style="justify-content:space-between"><h2>Admin</h2><button class="btn btn-line" type="button" id="adminOut">Sign out</button></div>
+<button class="btn btn-gold" type="button" id="addJobBtn">Add Job</button>
+<div style="overflow:auto;margin-top:12px"><table><thead><tr><th>ID</th><th>Job</th><th>Status</th><th></th></tr></thead><tbody id="adminJobRows"></tbody></table></div>
+<form id="jobForm" class="block hidden">
+<label>Title<input name="title" required></label>
+<label>Company<input name="company" required></label>
+<label>Country<select name="countryCode" id="jfCountry" required></select></label>
+<label>City<input name="city"></label>
+<label>Category<select name="category" id="jfCat"></select></label>
+<label>Salary<input name="salary"></label>
+<label>Description<textarea name="description" rows="3"></textarea></label>
+<div class="row">
+<button class="btn btn-line" type="submit" data-st="Draft">Draft</button>
+<button class="btn btn-gold" type="submit" data-st="Published">Publish</button>
+</div>
+</form>
+<h3 style="margin-top:20px">Applications</h3>
+<div style="overflow:auto"><table><thead><tr><th>Number</th><th>Name</th><th>Job</th><th></th></tr></thead><tbody id="adminAppRows"></tbody></table></div>
+</div></section>
+
+<footer class="wrap">Worldwide Jobs</footer>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script>
+const ALWAYS=["ae","sa","qa","om","bh","kw"];
+const COUNTRIES=[
+{code:"ae",name:"UAE",flag:"🇦🇪"},{code:"sa",name:"Saudi Arabia",flag:"🇸🇦"},
+{code:"qa",name:"Qatar",flag:"🇶🇦"},{code:"om",name:"Oman",flag:"🇴🇲"},
+{code:"bh",name:"Bahrain",flag:"🇧🇭"},{code:"kw",name:"Kuwait",flag:"🇰🇼"},
+{code:"de",name:"Germany",flag:"🇩🇪"},{code:"gb",name:"United Kingdom",flag:"🇬🇧"},
+{code:"fr",name:"France",flag:"🇫🇷"},{code:"ca",name:"Canada",flag:"🇨🇦"},
+{code:"au",name:"Australia",flag:"🇦🇺"},{code:"it",name:"Italy",flag:"🇮🇹"},
+{code:"nl",name:"Netherlands",flag:"🇳🇱"},{code:"us",name:"USA",flag:"🇺🇸"},
+{code:"lu",name:"Luxembourg",flag:"🇱🇺"},{code:"ie",name:"Ireland",flag:"🇮🇪"},
+{code:"jp",name:"Japan",flag:"🇯🇵"},{code:"nz",name:"New Zealand",flag:"🇳🇿"}
+];
+const CATS=["Hospitality & Hotels","Building & Construction","Driving — Light Vehicle","Driving — Heavy Vehicle","Healthcare & Nursing","Logistics & Warehouse","Information Technology","Oil & Gas","Security & Safety","Domestic Work"];
+const $=id=>document.getElementById(id);
+const MEM={};
+function store(){try{return JSON.parse(localStorage.getItem("wj_db")||"{}")}catch(e){return MEM.data||{}}}
+function save(db){MEM.data=db;try{localStorage.setItem("wj_db",JSON.stringify(db))}catch(e){}}
+function ensureDb(){
+  const db=store(); db.apps=db.apps||[]; db.appSeq=Number(db.appSeq||0); db.jobSeq=Number(db.jobSeq||0); db.jobs=db.jobs||[];
+  if(!db.jobs.length){
+    db.jobs=[
+      {id:"JOB-2026-000001",title:"Hotel Front Office Associate",company:"Gulf Hospitality Group",country:"UAE",countryCode:"ae",city:"Dubai",category:"Hospitality & Hotels",salary:"AED 3,500 - 4,500",description:"Hotel front office in Dubai.",status:"Published"},
+      {id:"JOB-2026-000002",title:"Warehouse Operative",company:"Nordic Logistics Partners",country:"Germany",countryCode:"de",city:"Frankfurt",category:"Logistics & Warehouse",salary:"EUR 2,400 - 2,900",description:"Warehouse work in Frankfurt.",status:"Published"}
+    ]; db.jobSeq=2; save(db);
+  }
+  return db;
+}
+function allJobs(){return ensureDb().jobs}
+function publicJobs(){return allJobs().filter(j=>j.status==="Published")}
+function nextJobId(){const db=ensureDb(); db.jobSeq+=1; save(db); return "JOB-2026-"+String(db.jobSeq).padStart(6,"0")}
+function nextAppNo(){const db=ensureDb(); db.appSeq+=1; save(db); return "WJ-2026-"+String(db.appSeq).padStart(6,"0")}
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id)); window.scrollTo(0,0)}
+let shownAll=false, currentJob=null, lastApp=null, editingJobId=null;
+
+function renderCountries(){
+  const first=COUNTRIES.filter(c=>ALWAYS.indexOf(c.code)>=0);
+  const rest=COUNTRIES.filter(c=>ALWAYS.indexOf(c.code)<0);
+  const list=shownAll?COUNTRIES:first.concat(rest).slice(0,10);
+  $("countryGrid").innerHTML=list.map(c=>`<button class="ccard" type="button" data-code="${c.code}"><span class="f">${c.flag}</span><b>${c.name}</b></button>`).join("");
+  document.querySelectorAll("#countryGrid .ccard").forEach(b=>b.onclick=()=>{location.hash="#jobs"; $("fCountry").value=b.dataset.code; loadJobs()});
+}
+function fillSelects(){
+  COUNTRIES.forEach(c=>{
+    ["fCountry","jfCountry"].forEach(id=>{
+      const el=$(id); if(!el||el.querySelector('option[value="'+c.code+'"]'))return;
+      const o=document.createElement("option"); o.value=c.code; o.textContent=c.flag+" "+c.name; el.appendChild(o);
+    });
+  });
+  CATS.forEach(c=>{
+    ["fCat","jfCat"].forEach(id=>{
+      const el=$(id); if(!el||[...el.options].some(o=>o.value===c))return;
+      const o=document.createElement("option"); o.value=c; o.textContent=c; el.appendChild(o);
+    });
+  });
+}
+function loadJobs(){
+  let list=publicJobs();
+  const q=($("q").value||"").toLowerCase();
+  if($("fCountry").value) list=list.filter(j=>j.countryCode===$("fCountry").value);
+  if($("fCat").value) list=list.filter(j=>j.category===$("fCat").value);
+  if(q) list=list.filter(j=>[j.title,j.company,j.country,j.id].join(" ").toLowerCase().includes(q));
+  $("jobList").innerHTML=list.length?list.map(j=>`<article class="jcard" data-id="${j.id}"><h3>${j.title}</h3><div class="muted">${j.company}</div><div><span class="tag">${j.country}</span><span class="tag">${j.city||""}</span><span class="tag">${j.category}</span></div><div class="muted">${j.salary||""}</div><button class="btn btn-gold" type="button">Apply Now</button></article>`).join(""):'<p class="muted">No published jobs.</p>';
+  $("jobList").querySelectorAll(".jcard").forEach(card=>{
+    card.querySelector("button").onclick=e=>{e.stopPropagation(); openApply(card.dataset.id)};
+    card.onclick=()=>openJob(card.dataset.id);
+  });
+}
+function openJob(id){
+  currentJob=allJobs().find(j=>j.id===id); if(!currentJob) return;
+  $("jobHead").innerHTML=`<h2>${currentJob.title}</h2><p class="muted">${currentJob.company} · ${currentJob.country}</p>`;
+  $("jobBody").innerHTML=`<div class="block">${currentJob.description||""}<br>${currentJob.salary||""}</div>`;
+  $("applyNow").onclick=()=>openApply(currentJob.id);
+  show("job");
+}
+function openApply(id){
+  currentJob=allJobs().find(j=>j.id===id); if(!currentJob) return;
+  $("applyJobBox").innerHTML=`<b>${currentJob.title}</b><br>${currentJob.company} · ${currentJob.id}<br>${currentJob.country}`;
+  show("apply");
+}
+function appPdf(a){
+  if(!window.jspdf){alert("PDF ke liye internet on karo."); return null}
+  const doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"});
+  doc.setFillColor(16,44,76); doc.rect(0,0,210,24,"F");
+  doc.setTextColor(201,162,39); doc.setFontSize(14); doc.text("WORLDWIDE JOBS",16,12);
+  doc.setTextColor(255,255,255); doc.setFontSize(9); doc.text("Application PDF",16,19);
+  let y=40; doc.setTextColor(16,32,51); doc.setFontSize(12);
+  ["Application Number: "+a.no,"Date: "+a.date,"Name: "+a.fullName,"Mobile: "+a.mobile,"Email: "+a.email,"Nationality: "+(a.nationality||""),"Job: "+a.jobTitle,"Company: "+a.company,"Job ID: "+a.jobId,"Country: "+a.country,"Experience: "+(a.workExperience||""),"Notes: "+(a.notes||"—")].forEach(l=>{doc.text(String(l),16,y,{maxWidth:178}); y+=8});
+  return doc;
+}
+$("applyForm").onsubmit=function(e){
+  e.preventDefault(); $("formErr").textContent="";
+  if(!currentJob){$("formErr").textContent="Select a job first."; return}
+  const fd=new FormData(e.target);
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fd.get("email")||"")){$("formErr").textContent="Valid email required."; return}
+  if(String(fd.get("mobile")||"").replace(/\s/g,"").length<8){$("formErr").textContent="Valid mobile required."; return}
+  const app={no:nextAppNo(),date:new Date().toLocaleDateString("en-GB"),status:"Received",jobTitle:currentJob.title,company:currentJob.company,jobId:currentJob.id,country:currentJob.country,fullName:fd.get("fullName"),mobile:fd.get("mobile"),email:fd.get("email"),nationality:fd.get("nationality"),workExperience:fd.get("workExperience"),notes:fd.get("notes")||""};
+  const db=ensureDb(); db.apps.push(app); save(db); lastApp=app;
+  $("doneNo").textContent=app.no;
+  $("doneBox").innerHTML=`<div>${app.jobTitle}</div><div class="muted">${app.company} · ${app.country}</div>`;
+  show("done");
+  setTimeout(()=>{const d=appPdf(app); if(d) d.save(app.no+".pdf")},200);
+};
+$("dlPdf").onclick=()=>{if(lastApp){const d=appPdf(lastApp); if(d)d.save(lastApp.no+".pdf")}};
+$("viewAll").onclick=()=>{shownAll=true; $("viewAll").style.display="none"; renderCountries()};
+$("backJobs").onclick=()=>{show("jobs"); loadJobs()};
+$("backJob").onclick=()=>{if(currentJob) openJob(currentJob.id); else {show("jobs"); loadJobs()}};
+["q","fCountry","fCat"].forEach(id=>{$(id).onchange=loadJobs});
+$("q").oninput=()=>{clearTimeout(window._t); window._t=setTimeout(loadJobs,250)};
+
+function renderAdmin(){
+  $("adminJobRows").innerHTML=allJobs().slice().reverse().map(j=>`<tr><td>${j.id}</td><td>${j.title}<br><small>${j.company} · ${j.country}</small></td><td>${j.status}</td><td>
+    <button type="button" data-a="pub" data-id="${j.id}">${j.status==="Published"?"Unpublish":"Publish"}</button>
+    <button type="button" data-a="del" data-id="${j.id}">Delete</button></td></tr>`).join("");
+  $("adminAppRows").innerHTML=ensureDb().apps.slice().reverse().map(a=>`<tr><td>${a.no}</td><td>${a.fullName}<br><small>${a.mobile} · ${a.email}</small></td><td>${a.jobTitle}</td><td><button type="button" data-p="${a.no}">PDF</button></td></tr>`).join("");
+}
+function openAdmin(){ if(sessionStorage.getItem("wj_admin")!=="1"){show("adminLogin"); return} renderAdmin(); show("admin") }
+$("adminLoginForm").onsubmit=function(e){e.preventDefault(); const fd=new FormData(e.target); if(fd.get("username")==="admin"&&fd.get("password")==="WJ-Admin-2026"){sessionStorage.setItem("wj_admin","1"); openAdmin()} else $("adminErr").textContent="Invalid login"};
+$("adminOut").onclick=()=>{sessionStorage.removeItem("wj_admin"); show("home")};
+$("addJobBtn").onclick=()=>{$("jobForm").classList.remove("hidden"); $("jobForm").reset()};
+$("jobForm").onsubmit=function(e){
+  e.preventDefault();
+  const st=e.submitter && e.submitter.getAttribute("data-st") ? e.submitter.getAttribute("data-st") : "Draft";
+  const fd=new FormData(e.target);
+  const c=COUNTRIES.find(x=>x.code===fd.get("countryCode"))||{name:"",code:""};
+  const db=ensureDb();
+  db.jobs.push({id:nextJobId(),title:fd.get("title"),company:fd.get("company"),countryCode:c.code,country:c.name,city:fd.get("city"),category:fd.get("category"),salary:fd.get("salary"),description:fd.get("description"),status:st});
+  save(db); $("jobForm").classList.add("hidden"); renderAdmin();
+};
+$("adminJobRows").onclick=function(e){
+  const id=e.target.getAttribute("data-id"), a=e.target.getAttribute("data-a"); if(!id) return;
+  const db=ensureDb(); const j=db.jobs.find(x=>x.id===id); if(!j) return;
+  if(a==="pub") j.status=j.status==="Published"?"Unpublished":"Published";
+  if(a==="del" && confirm("Delete job?")) db.jobs=db.jobs.filter(x=>x.id!==id);
+  save(db); renderAdmin();
+};
+$("adminAppRows").onclick=function(e){
+  const no=e.target.getAttribute("data-p"); if(!no) return;
+  const a=ensureDb().apps.find(x=>x.no===no); if(!a) return;
+  const d=appPdf(a); if(d) d.save(a.no+".pdf");
+};
+window.addEventListener("hashchange",()=>{
+  const h=(location.hash||"#home").slice(1);
+  if(h==="jobs"){show("jobs"); loadJobs()}
+  else if(h==="countries"){show("home"); setTimeout(()=>$("countries").scrollIntoView(),40)}
+  else if(h==="wj-owner247") openAdmin();
+  else show("home");
+});
+let taps=0,tapT=0;
+$("secretMark").onclick=function(e){e.preventDefault(); const n=Date.now(); if(n-tapT>1400)taps=0; tapT=n; taps++; if(taps>=5){taps=0; openAdmin()}};
+ensureDb(); fillSelects(); renderCountries();
+if(location.hash==="#jobs"){show("jobs"); loadJobs()}
+if(location.hash==="#wj-owner247") openAdmin();
+</script>
+</body></html>
